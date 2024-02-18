@@ -10,8 +10,9 @@ import unicodedata
 
 from absl import flags
 import six
-import tensorflow.compat.v1 as tf
+import tensorflow
 
+tf = tensorflow.compat.v1
 FLAGS = flags.FLAGS
 
 flags.DEFINE_bool(

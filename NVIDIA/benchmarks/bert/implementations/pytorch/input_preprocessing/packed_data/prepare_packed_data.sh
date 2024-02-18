@@ -34,7 +34,7 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 #if no arguments passed
 DATADIR=/workspace/bert_data
 SKIP=0
-SHARDS=4320
+SHARDS=2048
 
 #parse passed arguments
 while [[ $# -gt 0 ]]; do

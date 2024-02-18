@@ -34,9 +34,9 @@ import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss
 from torch.utils import checkpoint
-from apex.contrib.multihead_attn import SelfMultiheadAttn
-from apex import fused_dense
-from model.layers.fused import FusedMlp
+# from apex.contrib.multihead_attn import SelfMultiheadAttn
+# from apex import fused_dense
+# from model.layers.fused import FusedMlp
 from file_utils import cached_path
 from utils import get_rank
 
@@ -49,9 +49,9 @@ from model.layers.layernorm import BertLayerNorm
 
 import mhalib
 from mha import *
-from fmha import FMHA
-from transformer_engine.pytorch import fp8_autocast
-from transformer_engine.common import recipe
+# from fmha import FMHA
+# from transformer_engine.pytorch import fp8_autocast
+# from transformer_engine.common import recipe
 
 logger = logging.getLogger(__name__)
 #torch._C._jit_set_profiling_mode(False)
@@ -185,7 +185,7 @@ def load_tf_weights_in_bert(model, tf_checkpoint_path, use_fast_mha=False):
 
 @torch.jit.script
 def jit_dropout_add(x, residual, prob):
-    # type: (Tensor, Tensor, float) -> Tensor
+    # 'type: (Tensor, Tensor, float) -> Tensor
     #out = F.dropout(x, p=prob)
     out = torch.nn.functional.dropout(x, p=prob, training=True)
     out = residual + out
@@ -193,14 +193,14 @@ def jit_dropout_add(x, residual, prob):
 
 @torch.jit.script
 def jit_bias_dropout_add(x, bias, residual, prob) :
-    # type: (Tensor, Tensor, Tensor, float) -> Tensor
+    # 'type: (Tensor, Tensor, Tensor, float) -> Tensor
     #out = F.dropout(x, p=prob)
     out = torch.nn.functional.dropout(x + bias, p=prob, training=True)
     out = residual + out
     return out
 
 def fused_dropout_add(x, residual, prob, is_training) :
-    # type: (Tensor, Tensor, float, bool) -> Tensor
+    # 'type: (Tensor, Tensor, float, bool) -> Tensor
     #out = F.dropout(x, p=prob, training=is_training)
     if is_training:
         out = jit_dropout_add(x, residual, prob)
@@ -210,7 +210,7 @@ def fused_dropout_add(x, residual, prob, is_training) :
     return out
 
 def fused_bias_dropout_add(x, bias, residual, prob, is_training) :
-    # type: (Tensor, Tensor, Tensor, float, bool) -> Tensor
+    # 'type: (Tensor, Tensor, Tensor, float, bool) -> Tensor
     #out = F.dropout(x, p=prob, training=is_training)
     if is_training:
         out = jit_bias_dropout_add(x, bias, residual, prob, True)
@@ -256,14 +256,14 @@ class LinearDropoutAdd(torch.nn.Linear):
     def forward(self, input, residual):
         if self.bias is None or not self.fused_bias_fc:
             linear_out = nn.functional.linear(input, self.weight, None)
-        else:
-            shape_init = list(input.size())
-            if 'fused_dense_function' in dir(fused_dense):
-                linear_out = fused_dense.fused_dense_function(input.view(-1, shape_init[-1]), self.weight, self.bias)
-            else:
-                linear_out = fused_dense.fused_dense._fused_dense(input.view(-1, shape_init[-1]), self.weight, self.bias)
-            shape_final = shape_init[:-1] + [list(linear_out.size())[-1]]
-            linear_out = linear_out.view(shape_final)
+        # else:
+        #     shape_init = list(input.size())
+        #     if 'fused_dense_function' in dir(fused_dense):
+        #         linear_out = fused_dense.fused_dense_function(input.view(-1, shape_init[-1]), self.weight, self.bias)
+        #     else:
+        #         linear_out = fused_dense.fused_dense._fused_dense(input.view(-1, shape_init[-1]), self.weight, self.bias)
+        #     shape_final = shape_init[:-1] + [list(linear_out.size())[-1]]
+        #     linear_out = linear_out.view(shape_final)
 
            # linear_out = fused_dense.fused_dense_function(input, self.weight, self.bias)
         if self.bias is None:
@@ -431,8 +431,8 @@ class BertSelfOutput(nn.Module):
         self.fused_dropout_add = config.fused_dropout_add
         if not config.fused_bias_mha:
             self.dense = nn.Linear(config.hidden_size, config.hidden_size)
-        else:
-            self.dense = fused_dense.FusedDense(config.hidden_size, config.hidden_size)
+        # else:
+        #     self.dense = fused_dense.FusedDense(config.hidden_size, config.hidden_size)
         self.LayerNorm = BertLayerNorm(config.hidden_size, eps=1e-12)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.p = config.hidden_dropout_prob
@@ -452,63 +452,63 @@ class BertSelfOutput(nn.Module):
         return hidden_states
 
 # This module uses Apex C++ multihead attention implementation with fusions. 
-class FastBertAttention(nn.Module):
-    def __init__(self, config):
-        super(FastBertAttention, self).__init__()
-        self.multi_head_attention = SelfMultiheadAttn(config.hidden_size, config.num_attention_heads, dropout = config.attention_probs_dropout_prob, bias=True, include_norm_add=False, impl='fast', separate_qkv_params=True, mask_additive=True)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.p = config.hidden_dropout_prob
-        self.fused_dropout_add = config.fused_dropout_add
-        self.layer_norm = BertLayerNorm(config.hidden_size, eps=1e-12)
-    def forward(self, input_tensor, attention_mask):
-        residual=input_tensor
-        multi_head_attention_output,_ = self.multi_head_attention(query = input_tensor, key = input_tensor, value = input_tensor, key_padding_mask=attention_mask, need_weights=True,attn_mask = None, is_training = self.training)
-        if self.fused_dropout_add:
-            attention_output = fused_dropout_add(multi_head_attention_output, residual, self.p, self.training)
-            attention_output = self.layer_norm(attention_output)
-        else:
-            attention_output = self.dropout(multi_head_attention_output)
-            attention_output = self.layer_norm(attention_output + residual)
+# class FastBertAttention(nn.Module):
+#     def __init__(self, config):
+#         super(FastBertAttention, self).__init__()
+#         self.multi_head_attention = SelfMultiheadAttn(config.hidden_size, config.num_attention_heads, dropout = config.attention_probs_dropout_prob, bias=True, include_norm_add=False, impl='fast', separate_qkv_params=True, mask_additive=True)
+#         self.dropout = nn.Dropout(config.hidden_dropout_prob)
+#         self.p = config.hidden_dropout_prob
+#         self.fused_dropout_add = config.fused_dropout_add
+#         self.layer_norm = BertLayerNorm(config.hidden_size, eps=1e-12)
+#     def forward(self, input_tensor, attention_mask):
+#         residual=input_tensor
+#         multi_head_attention_output,_ = self.multi_head_attention(query = input_tensor, key = input_tensor, value = input_tensor, key_padding_mask=attention_mask, need_weights=True,attn_mask = None, is_training = self.training)
+#         if self.fused_dropout_add:
+#             attention_output = fused_dropout_add(multi_head_attention_output, residual, self.p, self.training)
+#             attention_output = self.layer_norm(attention_output)
+#         else:
+#             attention_output = self.dropout(multi_head_attention_output)
+#             attention_output = self.layer_norm(attention_output + residual)
 
-        return attention_output
+#         return attention_output
 
-class PadFMHABertAttention(nn.Module):
-    def __init__(self, config):
-        super(PadFMHABertAttention, self).__init__()
-        self.self = FMHA(config)
-        self.output = BertSelfOutput(config)
-        self.max_s = config.max_seq_length
-    def forward(self, input_tensor, cu_seqlens):
+# class PadFMHABertAttention(nn.Module):
+#     def __init__(self, config):
+#         super(PadFMHABertAttention, self).__init__()
+#         self.self = FMHA(config)
+#         self.output = BertSelfOutput(config)
+#         self.max_s = config.max_seq_length
+#     def forward(self, input_tensor, cu_seqlens):
 
-        # TODO flattening here might not be necessary
-        hidden_size = input_tensor.shape[-1]
-        input_flat = input_tensor.view(-1, hidden_size)
-        self_output = self.self(input_flat, cu_seqlens, self.max_s, is_training=self.training)
-        self_output = self_output.view(input_tensor.shape)
+#         # TODO flattening here might not be necessary
+#         hidden_size = input_tensor.shape[-1]
+#         input_flat = input_tensor.view(-1, hidden_size)
+#         self_output = self.self(input_flat, cu_seqlens, self.max_s, is_training=self.training)
+#         self_output = self_output.view(input_tensor.shape)
 
-        attention_output = self.output(self_output, input_tensor)
-        return attention_output
+#         attention_output = self.output(self_output, input_tensor)
+#         return attention_output
 
-class UnpadFMHABertAttention(nn.Module):
-    def __init__(self, config):
-        super(UnpadFMHABertAttention, self).__init__()
-        self.self = FMHA(config)
-        self.output = BertSelfOutput(config)
-    def forward(self, input_tensor, cu_seqlens, max_s, batch_size=None):
-        self_output = self.self(input_tensor, cu_seqlens, max_s, is_training=self.training)
-        attention_output = self.output(self_output, input_tensor)
-        return attention_output
+# class UnpadFMHABertAttention(nn.Module):
+#     def __init__(self, config):
+#         super(UnpadFMHABertAttention, self).__init__()
+#         self.self = FMHA(config)
+#         self.output = BertSelfOutput(config)
+#     def forward(self, input_tensor, cu_seqlens, max_s, batch_size=None):
+#         self_output = self.self(input_tensor, cu_seqlens, max_s, is_training=self.training)
+#         attention_output = self.output(self_output, input_tensor)
+#         return attention_output
 
-class FastUnpadBertAttention(nn.Module):
-    def __init__(self, config):
-        super(FastUnpadBertAttention, self).__init__()
-        self.self = FastUnpadBertSelfAttention(config, enable_stream=config.enable_stream, enable_sync=False, fuse_mask=config.fuse_mask, fuse_scale=config.fuse_scale, fuse_qkv=config.fuse_qkv, fuse_dropout=config.fuse_dropout, apex_softmax=config.apex_softmax, pad=config.pad)
-        self.output = BertSelfOutput(config)
+# class FastUnpadBertAttention(nn.Module):
+#     def __init__(self, config):
+#         super(FastUnpadBertAttention, self).__init__()
+#         self.self = FastUnpadBertSelfAttention(config, enable_stream=config.enable_stream, enable_sync=False, fuse_mask=config.fuse_mask, fuse_scale=config.fuse_scale, fuse_qkv=config.fuse_qkv, fuse_dropout=config.fuse_dropout, apex_softmax=config.apex_softmax, pad=config.pad)
+#         self.output = BertSelfOutput(config)
 
-    def forward(self, input_tensor, attention_mask, seqlen, batch):
-        self_output = self.self(input_tensor, attention_mask, seqlen, batch, is_training = self.training)
-        attention_output = self.output(self_output, input_tensor)
-        return attention_output
+#     def forward(self, input_tensor, attention_mask, seqlen, batch):
+#         self_output = self.self(input_tensor, attention_mask, seqlen, batch, is_training = self.training)
+#         attention_output = self.output(self_output, input_tensor)
+#         return attention_output
 
 class BertAttention(nn.Module):
     def __init__(self, config):
@@ -528,20 +528,22 @@ class BertIntermediate(nn.Module):
         self.fused_gelu_bias = config.fused_gelu_bias
         self.fuse_bias = config.fused_bias_fc
         self.fuse_fc_gelu = config.fused_gemm_gelu
-        if self.fuse_fc_gelu:
-          self.dense = fused_dense.FusedDenseGeluDense(config.hidden_size, config.intermediate_size, config.hidden_size)
-        else:
+        # if self.fuse_fc_gelu:
+        #   self.dense = fused_dense.FusedDenseGeluDense(config.hidden_size, config.intermediate_size, config.hidden_size)
+            
+        # else:
+        if 1:
           if config.fused_gelu_bias:
               self.dense = LinearActivation(config.hidden_size, config.intermediate_size, act=config.hidden_act)
           else:
-              if not self.fuse_bias:
+            #   if not self.fuse_bias:
                   self.dense = nn.Linear(config.hidden_size, config.intermediate_size)
-              else:
-                  self.dense = fused_dense.FusedDense(config.hidden_size, config.intermediate_size)
-              if isinstance(config.hidden_act, str) or (sys.version_info[0] == 2 and isinstance(config.hidden_act, unicode)):
-                  self.intermediate_act_fn = ACT2FN[config.hidden_act]
-              else:
-                  self.intermediate_act_fn = config.hidden_act
+            #   else:
+            #       self.dense = fused_dense.FusedDense(config.hidden_size, config.intermediate_size)
+            #   if isinstance(config.hidden_act, str) or (sys.version_info[0] == 2 and isinstance(config.hidden_act, unicode)):
+        self.intermediate_act_fn = ACT2FN[config.hidden_act]
+            #   else:
+            #       self.intermediate_act_fn = config.hidden_act
 
     def forward(self, hidden_states):
         if self.fuse_fc_gelu:
@@ -572,8 +574,8 @@ class BertOutput(nn.Module):
             if not config.fused_dropout_add:
                 if not self.fuse_bias:
                     self.dense = nn.Linear(config.intermediate_size, config.hidden_size)
-                else:
-                    self.dense = fused_dense.FusedDense(config.intermediate_size, config.hidden_size)
+                # else:
+                #     self.dense = fused_dense.FusedDense(config.intermediate_size, config.hidden_size)
             else:
                 self.dense = LinearDropoutAdd(config.intermediate_size, config.hidden_size, bias=True, p=config.hidden_dropout_prob, fused_bias_fc=self.fuse_bias)
         self.LayerNorm = BertLayerNorm(config.hidden_size, eps=1e-12)
@@ -670,15 +672,16 @@ class BertLayer(nn.Module):
     def __init__(self, config):
         super(BertLayer, self).__init__()
         self.unpad = config.unpad
-        if config.pad_fmha:
-            self.attention = PadFMHABertAttention(config)
-        elif config.unpad_fmha:
-            self.attention = UnpadFMHABertAttention(config)
-        elif config.fused_mha:
-            self.attention = FastBertAttention(config)
-        elif config.unpad:
-            self.attention = FastUnpadBertAttention(config)
-        else:
+        # if config.pad_fmha:
+        #     self.attention = PadFMHABertAttention(config)
+        # elif config.unpad_fmha:
+        #     self.attention = UnpadFMHABertAttention(config)
+        # elif config.fused_mha:
+        #     self.attention = FastBertAttention(config)
+        # elif config.unpad:
+        #     self.attention = FastUnpadBertAttention(config)
+        # else:
+        if 1:
             self.attention = BertAttention(config)
         self.intermediate = BertIntermediate(config)
         self.output = BertOutput(config)
@@ -699,21 +702,22 @@ class BertEncoder(nn.Module):
         self.fp8_recipe = None
         self.use_transformer_engine2 = config.use_transformer_engine2
         self.ntokens = None
-        if config.use_transformer_engine2:
-            layer = BertTransformerLayer2(config)
-            fp8_format = recipe.Format.HYBRID
-            fp8_margin = 0
-            fp8_interval = 1
-            self.fp8_recipe = recipe.DelayedScaling(
-                margin=fp8_margin,
-                interval=fp8_interval,
-                fp8_format=fp8_format,
-                amax_history_len=1,
-                amax_compute_algo="most_recent",
-                reduce_amax=False,
-            )
-        else:
-            layer = BertLayer(config)
+        # if config.use_transformer_engine2:
+        #     layer = BertTransformerLayer2(config)
+        #     fp8_format = recipe.Format.HYBRID
+        #     fp8_margin = 0
+        #     fp8_interval = 1
+        #     self.fp8_recipe = recipe.DelayedScaling(
+        #         margin=fp8_margin,
+        #         interval=fp8_interval,
+        #         fp8_format=fp8_format,
+        #         amax_history_len=1,
+        #         amax_compute_algo="most_recent",
+        #         reduce_amax=False,
+        #     )
+        # else:
+        layer = BertLayer(config)
+
         self.layer = nn.ModuleList([copy.deepcopy(layer) for _ in range(config.num_hidden_layers)])
 
         self.num_attention_heads = config.num_attention_heads
@@ -770,25 +774,26 @@ class BertEncoder(nn.Module):
         else:
             if self.fused_mha and not self.pad_fmha:
                 hidden_states = hidden_states.permute(1,0,2).contiguous()
-            if self.use_transformer_engine2:
-                with fp8_autocast(enabled=True, fp8_recipe=self.fp8_recipe):
-                    for i,layer_module in enumerate(self.layer):
-                        if seqlen is None and batch is None:
-                            hidden_states = layer_module(hidden_states, attention_mask, maxseqlen, self.ntokens)
-                        else:
-                            assert seqlen is not None
-                            assert batch is not None
-                            if self.unpad_fmha:
-                                hidden_states = layer_module(hidden_states, cu_seqlens, maxseqlen_in_batch)
-                            else:
-                                hidden_states = layer_module(hidden_states, attention_mask, seqlen, batch)
+            # if self.use_transformer_engine2:
+            #     with fp8_autocast(enabled=True, fp8_recipe=self.fp8_recipe):
+            #         for i,layer_module in enumerate(self.layer):
+            #             if seqlen is None and batch is None:
+            #                 hidden_states = layer_module(hidden_states, attention_mask, maxseqlen, self.ntokens)
+            #             else:
+            #                 assert seqlen is not None
+            #                 assert batch is not None
+            #                 if self.unpad_fmha:
+            #                     hidden_states = layer_module(hidden_states, cu_seqlens, maxseqlen_in_batch)
+            #                 else:
+            #                     hidden_states = layer_module(hidden_states, attention_mask, seqlen, batch)
     
-                        if output_all_encoded_layers:
-                            if self.fused_mha and not self.pad_fmha:
-                                all_encoder_layers.append(hidden_states.permute(1,0,2).contiguous())
-                            else:
-                                all_encoder_layers.append(hidden_states)
-            else:
+            #             if output_all_encoded_layers:
+            #                 if self.fused_mha and not self.pad_fmha:
+            #                     all_encoder_layers.append(hidden_states.permute(1,0,2).contiguous())
+            #                 else:
+            #                     all_encoder_layers.append(hidden_states)
+            # else:
+            if 1:
                 for i,layer_module in enumerate(self.layer):
                     if seqlen is None and batch is None:
                         hidden_states = layer_module(hidden_states, attention_mask)
@@ -877,8 +882,8 @@ class BertLMPredictionHead(nn.Module):
                                  bert_model_embedding_weights.size(0),
                                  bias=False)
             self.bias = nn.Parameter(torch.zeros(bert_model_embedding_weights.size(0)))
-        else:
-            self.decoder = FusedMlp(bert_model_embedding_weights.size(1), bert_model_embedding_weights.size(0)) 
+        # else:
+        #     self.decoder = FusedMlp(bert_model_embedding_weights.size(1), bert_model_embedding_weights.size(0)) 
         self.decoder.weight = bert_model_embedding_weights
 
     def forward(self, hidden_states):

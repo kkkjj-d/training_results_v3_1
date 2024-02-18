@@ -34,7 +34,7 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 #if no arguments passed
 DATADIR=/workspace/bert_data
 SKIP=0
-SHARDS=4320
+SHARDS=2048
 PACKED_DATA=0
 
 #parse passed arguments
@@ -107,36 +107,36 @@ if (( SKIP==0 )) ; then
     
 fi
 
-### Create HDF5 files for training
-mkdir -p ${DATADIR}/hdf5/training
-${SCRIPT_DIR}/parallel_create_hdf5.sh -i ${DATADIR}/download/results4 -o ${DATADIR}/hdf5/training -v ${DATADIR}/phase1/vocab.txt
+# ### Create HDF5 files for training
+# # mkdir -p ${DATADIR}/hdf5/training
+# ${SCRIPT_DIR}/parallel_create_hdf5.sh -i ${DATADIR}/download/results4 -o ${DATADIR}/hdf5/training -v ${DATADIR}/phase1/vocab.txt > ./input_preprocessing/logs/log1.txt
 
-### Chop HDF5 files into chunks
-python3 ${SCRIPT_DIR}/chop_hdf5_files.py \
- --num_shards ${SHARDS} \
- --input_hdf5_dir ${DATADIR}/hdf5/training \
- --output_hdf5_dir ${DATADIR}/hdf5/training-${SHARDS}
+# ### Chop HDF5 files into chunks
+# python3 ${SCRIPT_DIR}/chop_hdf5_files.py \
+#  --num_shards ${SHARDS} \
+#  --input_hdf5_dir ${DATADIR}/hdf5/training \
+#  --output_hdf5_dir ${DATADIR}/hdf5/training-${SHARDS} > ./input_preprocessing/logs/log2.txt
 
-### Convert fixed length to variable length format
-mkdir -p ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength
-CPUS=$( ls -d /sys/devices/system/cpu/cpu[[:digit:]]* | wc -w )
-CPUS=$((CPUS / 2))
-ls -1 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_uncompressed | \
-  xargs --max-args=1 --max-procs=${CPUS} -I{} python3 ${SCRIPT_DIR}/convert_fixed2variable.py \
-  --input_hdf5_file ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_uncompressed/{} \
-  --output_hdf5_file ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength/{}
+# ### Convert fixed length to variable length format
+# mkdir -p ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength
+# CPUS=$( ls -d /sys/devices/system/cpu/cpu[[:digit:]]* | wc -w )
+# CPUS=$((CPUS / 2))
+# ls -1 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_uncompressed | \
+#   xargs --max-args=1 --max-procs=${CPUS} -I{} python3 ${SCRIPT_DIR}/convert_fixed2variable.py \
+#   --input_hdf5_file ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_uncompressed/{} \
+#   --output_hdf5_file ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength/{}
 
-### Shuffling the data
-# generate the shuffling indices
-mkdir -p ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
-python3 ${SCRIPT_DIR}/shuffle_indices.py \
-  --input_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength \
-  --output_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
+# ### Shuffling the data
+# # generate the shuffling indices
+# mkdir -p ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
+# python3 ${SCRIPT_DIR}/shuffle_indices.py \
+#   --input_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength \
+#   --output_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
 
-#shuffle according to indices (takes ~4h on luna node, feel free to change max_workers on line 71 to reflect your system)
-python3 ${SCRIPT_DIR}/shuffle_samples.py \
-  --input_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength \
-  --output_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
+# #shuffle according to indices (takes ~4h on luna node, feel free to change max_workers on line 71 to reflect your system)
+# python3 ${SCRIPT_DIR}/shuffle_samples.py \
+#   --input_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength \
+#   --output_hdf5 ${DATADIR}/hdf5/training-${SHARDS}/hdf5_${SHARDS}_shards_varlength_shuffled
 
 ### Create full HDF5 files for evaluation
 mkdir -p ${DATADIR}/hdf5/eval
@@ -163,10 +163,10 @@ python3 ${SCRIPT_DIR}/convert_fixed2variable.py --input_hdf5_file ${DATADIR}/hdf
   --output_hdf5_file ${DATADIR}/hdf5/eval_varlength/part_eval_10k.hdf5
 
 ### Convert Tensorflow checkpoint to Pytorch one
-python3 ${SCRIPT_DIR}/../convert_tf_checkpoint.py \
-  --tf_checkpoint ${DATADIR}/phase1/model.ckpt-28252 \
-  --bert_config_path ${DATADIR}/phase1/bert_config.json \
-  --output_checkpoint ${DATADIR}/phase1/model.ckpt-28252.pt
+# python3 ${SCRIPT_DIR}/../convert_tf_checkpoint.py \
+#   --tf_checkpoint ${DATADIR}/phase1/model.ckpt-28252 \
+#   --bert_config_path ${DATADIR}/phase1/bert_config.json \
+#   --output_checkpoint ${DATADIR}/phase1/model.ckpt-28252.pt
 
 ### Example of how to generate checksums to verify correctness of the process
 # for i in `seq -w 0000 04319`; do 

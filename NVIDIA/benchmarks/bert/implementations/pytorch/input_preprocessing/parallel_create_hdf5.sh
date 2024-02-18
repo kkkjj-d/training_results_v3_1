@@ -68,7 +68,7 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 
 mkdir -p ${OUTPUTDIR}
-find -L ${INPUTDIR} -name "part-00*" | xargs --max-args=1 --max-procs=${CPUS} -I{}  ${SCRIPT_DIR}/create_pretraining_data_wrapper.sh {} ${OUTPUTDIR} ${VOCAB}
+find -L ${INPUTDIR} -name "part-00*" | xargs --max-args=1 --max-procs=${CPUS} -I{}  ${SCRIPT_DIR}/create_pretraining_data_wrapper.sh {} ${OUTPUTDIR} ${VOCAB} > ./input_preprocessing/logs/log1_p.txt
 
 ### If continue, you can try instead of line above something like line below to pick only the files not yet computed 
 # comm -3 <(ls -1 ${INPUTDIR}/) <(ls -1 ${OUTPUTDIR} | sed 's/\.hdf5$//') | grep -e "^part" | xargs --max-args=1 --max-procs=${CPUS} -I{}  ${SCRIPT_DIR}/create_pretraining_data_wrapper.sh ${INPUTDIR}/{} ${OUTPUTDIR} ${VOCAB}

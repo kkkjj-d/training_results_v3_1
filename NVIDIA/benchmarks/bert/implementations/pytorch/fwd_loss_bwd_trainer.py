@@ -14,7 +14,7 @@
 
 import torch
 from function import graph
-from apex import amp
+# from apex import amp
 import time
 from mlperf_common.scaleoutbridge import ScaleoutBridgeBase as SBridge
 
@@ -181,45 +181,45 @@ class FwdLossBwdTrainer():
         loss, mlm_acc, num_valid = model(*batch)
         return loss, mlm_acc, num_valid
 
-    def step(self, step, batch, model, optimizer, sbridge=SBridge(), ntokens=None, graph_capture_large_batch=False, data_iter=None):
-        loss = None
-        mlm_acc = None
+    # def step(self, step, batch, model, optimizer, sbridge=SBridge(), ntokens=None, graph_capture_large_batch=False, data_iter=None):
+    #     loss = None
+    #     mlm_acc = None
 
-        sbridge.start_prof(SBridge.FWD_TIME)
-        if ntokens is not None:
-            #print ('fwd_loss_bwd::step ntokens {}'.format(ntokens))
-            model.bert_model_segment.bert.encoder.ntokens = ntokens
-        loss, mlm_acc, _ = model(*batch)
-        next_batch = None
-        if data_iter is not None:
-            next_batch = next(data_iter, None)
-            if next_batch is not None:
-                next_batch = preprocess_batch(self.args, *next_batch, get_ntokens=(ntokens is not None), graph_capture_large_batch=graph_capture_large_batch)
+    #     sbridge.start_prof(SBridge.FWD_TIME)
+    #     if ntokens is not None:
+    #         #print ('fwd_loss_bwd::step ntokens {}'.format(ntokens))
+    #         model.bert_model_segment.bert.encoder.ntokens = ntokens
+    #     loss, mlm_acc, _ = model(*batch)
+    #     next_batch = None
+    #     if data_iter is not None:
+    #         next_batch = next(data_iter, None)
+    #         if next_batch is not None:
+    #             next_batch = preprocess_batch(self.args, *next_batch, get_ntokens=(ntokens is not None), graph_capture_large_batch=graph_capture_large_batch)
 
-        if self.send_stats_in_parallel:
-            self.stats_stream.wait_stream(torch.cuda.current_stream())
-            with torch.cuda.stream(self.stats_stream):
-                self.loss_cpu.copy_(loss.detach(), non_blocking=True)
-                self.mlm_acc_cpu.copy_(mlm_acc.detach(), non_blocking=True)
+    #     if self.send_stats_in_parallel:
+    #         self.stats_stream.wait_stream(torch.cuda.current_stream())
+    #         with torch.cuda.stream(self.stats_stream):
+    #             self.loss_cpu.copy_(loss.detach(), non_blocking=True)
+    #             self.mlm_acc_cpu.copy_(mlm_acc.detach(), non_blocking=True)
 
-        sbridge.stop_start_prof(SBridge.FWD_TIME, SBridge.BWD_TIME)
+    #     sbridge.stop_start_prof(SBridge.FWD_TIME, SBridge.BWD_TIME)
 
-        if self.args.bypass_amp:
-            loss.backward()
-        elif self.args.distributed_lamb:
-            optimizer._lazy_init_stage1()
-            self.grad_scaler.scale(loss).backward()
-            optimizer._lazy_init_stage2()
-        else:
-            with amp.scale_loss(loss, optimizer, delay_overflow_check=self.args.allreduce_post_accumulation) as scaled_loss:
-                scaled_loss.backward()
-        sbridge.stop_prof(SBridge.BWD_TIME)
+    #     if self.args.bypass_amp:
+    #         loss.backward()
+    #     elif self.args.distributed_lamb:
+    #         optimizer._lazy_init_stage1()
+    #         self.grad_scaler.scale(loss).backward()
+    #         optimizer._lazy_init_stage2()
+    #     else:
+    #         with amp.scale_loss(loss, optimizer, delay_overflow_check=self.args.allreduce_post_accumulation) as scaled_loss:
+    #             scaled_loss.backward()
+    #     sbridge.stop_prof(SBridge.BWD_TIME)
 
-        if self.send_stats_in_parallel:
-            self.stats_stream.synchronize()
-            loss = self.loss_cpu
-            mlm_acc = self.mlm_acc_cpu
+    #     if self.send_stats_in_parallel:
+    #         self.stats_stream.synchronize()
+    #         loss = self.loss_cpu
+    #         mlm_acc = self.mlm_acc_cpu
 
-        if data_iter is not None:
-            return loss, mlm_acc, sbridge, next_batch
-        return loss, mlm_acc, sbridge
+    #     if data_iter is not None:
+    #         return loss, mlm_acc, sbridge, next_batch
+    #     return loss, mlm_acc, sbridge

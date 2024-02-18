@@ -27,4 +27,4 @@ python3 ${SCRIPT_DIR}/create_pretraining_data.py \
    --max_predictions_per_seq=76 \
    --masked_lm_prob=0.15 \
    --random_seed=12345 \
-   --dupe_factor=10
+   --dupe_factor=10 > ./input_preprocessing/logs/log1_pc.txt

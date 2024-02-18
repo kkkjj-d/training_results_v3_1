@@ -15,13 +15,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from apex.contrib.multihead_attn import fast_mask_softmax_dropout_func
+# from apex.contrib.multihead_attn import fast_mask_softmax_dropout_func
 
 from bmm1 import *
 from bmm2 import *
 from padding import *
 from softmax import *
-
+generate_mask
 class FastUnpadBertSelfAttention(nn.Module):
     def __init__(self, config, enable_stream=True, enable_sync=True, fuse_mask=True, fuse_scale=True, fuse_qkv=True, fuse_dropout=True, apex_softmax=True, pad=True):
         super(FastUnpadBertSelfAttention, self).__init__()
