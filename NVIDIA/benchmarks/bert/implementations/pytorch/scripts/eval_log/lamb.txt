@@ -1,0 +1,122 @@
+1001 : {'global_steps': 0, 'eval_loss': 4.183948040008545, 'eval_mlm_accuracy': 0.3634149730205536}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+10401 : {'global_steps': 0, 'eval_loss': 1.4780139923095703, 'eval_mlm_accuracy': 0.7191495299339294}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+11201 : {'global_steps': 0, 'eval_loss': 1.493796706199646, 'eval_mlm_accuracy': 0.7193877696990967}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+12001 : {'global_steps': 0, 'eval_loss': 1.5580666065216064, 'eval_mlm_accuracy': 0.7197613716125488}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+1201 : {'global_steps': 0, 'eval_loss': 4.194128036499023, 'eval_mlm_accuracy': 0.3607645332813263}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+12801 : {'global_steps': 0, 'eval_loss': 1.5231889486312866, 'eval_mlm_accuracy': 0.7204806208610535}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+13601 : {'global_steps': 0, 'eval_loss': 1.5671255588531494, 'eval_mlm_accuracy': 0.7205203175544739}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+1401 : {'global_steps': 0, 'eval_loss': 4.21893310546875, 'eval_mlm_accuracy': 0.35948020219802856}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+14401 : {'global_steps': 0, 'eval_loss': 1.559891700744629, 'eval_mlm_accuracy': 0.7211905121803284}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+15201 : {'global_steps': 0, 'eval_loss': 1.4470970630645752, 'eval_mlm_accuracy': 0.7216271758079529}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+16001 : {'global_steps': 0, 'eval_loss': 1.5222504138946533, 'eval_mlm_accuracy': 0.7217649221420288}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+1601 : {'global_steps': 0, 'eval_loss': 3.6886324882507324, 'eval_mlm_accuracy': 0.42352914810180664}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+16801 : {'global_steps': 0, 'eval_loss': 1.530513048171997, 'eval_mlm_accuracy': 0.7219050526618958}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+17601 : {'global_steps': 0, 'eval_loss': 1.5244617462158203, 'eval_mlm_accuracy': 0.7221852540969849}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+1801 : {'global_steps': 0, 'eval_loss': 4.244317531585693, 'eval_mlm_accuracy': 0.3556038439273834}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+18401 : {'global_steps': 0, 'eval_loss': 1.4972432851791382, 'eval_mlm_accuracy': 0.7223907709121704}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+19201 : {'global_steps': 0, 'eval_loss': 1.5136868953704834, 'eval_mlm_accuracy': 0.7227177023887634}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+20000 : {'global_steps': 0, 'eval_loss': 1.489148736000061, 'eval_mlm_accuracy': 0.7216014862060547}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+20001 : {'global_steps': 0, 'eval_loss': 1.56870698928833, 'eval_mlm_accuracy': 0.7229278683662415}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+2001 : {'global_steps': 0, 'eval_loss': 4.248149394989014, 'eval_mlm_accuracy': 0.3531215488910675}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+201 : {'global_steps': 0, 'eval_loss': 4.164246559143066, 'eval_mlm_accuracy': 0.36837485432624817}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+20801 : {'global_steps': 0, 'eval_loss': 1.513895869255066, 'eval_mlm_accuracy': 0.7229138612747192}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+21601 : {'global_steps': 0, 'eval_loss': 1.5349057912826538, 'eval_mlm_accuracy': 0.7230820059776306}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+2201 : {'global_steps': 0, 'eval_loss': 4.3214287757873535, 'eval_mlm_accuracy': 0.35259145498275757}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+22401 : {'global_steps': 0, 'eval_loss': 1.514397382736206, 'eval_mlm_accuracy': 0.7231497168540955}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+23201 : {'global_steps': 0, 'eval_loss': 1.5209723711013794, 'eval_mlm_accuracy': 0.7232828140258789}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+24001 : {'global_steps': 0, 'eval_loss': 1.5044164657592773, 'eval_mlm_accuracy': 0.72358638048172}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+2401 : {'global_steps': 0, 'eval_loss': 2.2470457553863525, 'eval_mlm_accuracy': 0.5941480994224548}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+24801 : {'global_steps': 0, 'eval_loss': 1.5443387031555176, 'eval_mlm_accuracy': 0.7236540913581848}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+25601 : {'global_steps': 0, 'eval_loss': 1.5352981090545654, 'eval_mlm_accuracy': 0.7237918972969055}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+2601 : {'global_steps': 0, 'eval_loss': 4.280621528625488, 'eval_mlm_accuracy': 0.35165974497795105}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+26401 : {'global_steps': 0, 'eval_loss': 1.5302658081054688, 'eval_mlm_accuracy': 0.7238059043884277}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+27201 : {'global_steps': 0, 'eval_loss': 1.4957141876220703, 'eval_mlm_accuracy': 0.7239273190498352}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+28001 : {'global_steps': 0, 'eval_loss': 1.5262078046798706, 'eval_mlm_accuracy': 0.7239810228347778}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+2801 : {'global_steps': 0, 'eval_loss': 4.27216100692749, 'eval_mlm_accuracy': 0.35133981704711914}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+28801 : {'global_steps': 0, 'eval_loss': 1.5057356357574463, 'eval_mlm_accuracy': 0.7240650653839111}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+29601 : {'global_steps': 0, 'eval_loss': 1.5277336835861206, 'eval_mlm_accuracy': 0.7239763736724854}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+3001 : {'global_steps': 0, 'eval_loss': 4.281672477722168, 'eval_mlm_accuracy': 0.3512837588787079}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+30401 : {'global_steps': 0, 'eval_loss': 1.5236762762069702, 'eval_mlm_accuracy': 0.7239879965782166}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+31201 : {'global_steps': 0, 'eval_loss': 1.5243151187896729, 'eval_mlm_accuracy': 0.7239856719970703}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+32000 : {'global_steps': 0, 'eval_loss': 1.5239254236221313, 'eval_mlm_accuracy': 0.7239786982536316}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+3200 : {'global_steps': 0, 'eval_loss': 4.283618450164795, 'eval_mlm_accuracy': 0.3513304889202118}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+3201 : {'global_steps': 0, 'eval_loss': 1.5357012748718262, 'eval_mlm_accuracy': 0.6901374459266663}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+3601 : {'global_steps': 0, 'eval_loss': 1.2776707410812378, 'eval_mlm_accuracy': 0.7298329472541809}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+4001 : {'global_steps': 0, 'eval_loss': 1.4521652460098267, 'eval_mlm_accuracy': 0.703048586845398}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+401 : {'global_steps': 0, 'eval_loss': 4.152339935302734, 'eval_mlm_accuracy': 0.3684939444065094}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+4401 : {'global_steps': 0, 'eval_loss': 1.2774021625518799, 'eval_mlm_accuracy': 0.7297535538673401}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+4801 : {'global_steps': 0, 'eval_loss': 1.4337102174758911, 'eval_mlm_accuracy': 0.7088818550109863}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+5201 : {'global_steps': 0, 'eval_loss': 1.276853322982788, 'eval_mlm_accuracy': 0.7297021746635437}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+5601 : {'global_steps': 0, 'eval_loss': 1.415396809577942, 'eval_mlm_accuracy': 0.7120879888534546}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+6001 : {'global_steps': 0, 'eval_loss': 1.2769981622695923, 'eval_mlm_accuracy': 0.7296998500823975}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+601 : {'global_steps': 0, 'eval_loss': 4.160398483276367, 'eval_mlm_accuracy': 0.36691537499427795}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+6401 : {'global_steps': 0, 'eval_loss': 1.4198631048202515, 'eval_mlm_accuracy': 0.7139678001403809}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+6801 : {'global_steps': 0, 'eval_loss': 1.278133511543274, 'eval_mlm_accuracy': 0.7299473881721497}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+7201 : {'global_steps': 0, 'eval_loss': 1.44448721408844, 'eval_mlm_accuracy': 0.7153409123420715}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+7601 : {'global_steps': 0, 'eval_loss': 1.2779791355133057, 'eval_mlm_accuracy': 0.7299169898033142}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+8000 : {'global_steps': 0, 'eval_loss': 1.2779024839401245, 'eval_mlm_accuracy': 0.7299100160598755}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+8001 : {'global_steps': 0, 'eval_loss': 1.4258030652999878, 'eval_mlm_accuracy': 0.7166696190834045}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+801 : {'global_steps': 0, 'eval_loss': 4.136275291442871, 'eval_mlm_accuracy': 0.3714362680912018}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+8801 : {'global_steps': 0, 'eval_loss': 1.4243229627609253, 'eval_mlm_accuracy': 0.7173911929130554}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+9601 : {'global_steps': 0, 'eval_loss': 1.4111953973770142, 'eval_mlm_accuracy': 0.7182995676994324}
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.

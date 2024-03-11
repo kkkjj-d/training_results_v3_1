@@ -74,7 +74,7 @@ def check_sustained_training_time(sustained_training_time, raw_train_start):
     global last_time_check
     if utils.is_main_process():
         if last_time_check == 0 or ((time.time() - raw_train_start) / 60) - last_time_check > 1.0:
-            print(f"Training runs {(time.time() - raw_train_start) / 60} mins sustained_training_time {sustained_training_time}")
+            # print(f"Training runs {(time.time() - raw_train_start) / 60} mins sustained_training_time {sustained_training_time}")
             last_time_check = (time.time() - raw_train_start) / 60
     return True if sustained_training_time < (time.time() - raw_train_start) / 60 else False
 
@@ -716,9 +716,9 @@ def main():
     # if args.use_env and 'LOCAL_RANK' in os.environ:
     #     args.local_rank = int(os.environ['LOCAL_RANK'])
 
-    if utils.is_main_process():
-        print("parsed args:")
-        print(args)
+    # if utils.is_main_process():
+    #     print("parsed args:")
+    #     print(args)
     current_device = torch.device('cuda', torch.cuda.current_device())
     model, checkpoint, global_step = prepare_model_and_optimizer(args,current_device)
 
@@ -737,7 +737,11 @@ def main():
             eval_avg_loss, eval_avg_mlm_accuracy = run_eval(args, model, eval_dataloader, current_device)
 
             if utils.is_main_process():
-                print({"global_steps": global_step, "eval_loss": eval_avg_loss, "eval_mlm_accuracy":eval_avg_mlm_accuracy})
+                import re
+                chname = args.init_checkpoint
+                file_name = chname.split('/')[-1]
+                number = re.findall(r'\d+',file_name)
+                print(number[0],':',{"global_steps": global_step, "eval_loss": eval_avg_loss, "eval_mlm_accuracy":eval_avg_mlm_accuracy})
 
         
     return args, final_loss, train_time_raw

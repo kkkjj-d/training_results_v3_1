@@ -992,9 +992,9 @@ class BertPreTrainedModel(nn.Module):
             *inputs, **kwargs: additional input for the specific Bert class
                 (ex: num_labels for BertForSequenceClassification)
         """
-        logger.info("loading archive file {}".format(pretrained_checkpoint))
+        # logger.info("loading archive file {}".format(pretrained_checkpoint))
         assert config, "BERT configuration file must be provided to from_pretraining()"
-        logger.info("Model config {}".format(config))
+        # logger.info("Model config {}".format(config))
         # Instantiate model.
         model = cls(config, *inputs, **kwargs)
         if state_dict is None and not from_tf:
@@ -1038,12 +1038,12 @@ class BertPreTrainedModel(nn.Module):
         if not hasattr(model, 'bert') and any(s.startswith('bert.') for s in state_dict.keys()):
             start_prefix = 'bert.'
         load(model, prefix=start_prefix)
-        if len(missing_keys) > 0:
-            logger.info("Weights of {} not initialized from pretrained model: {}".format(
-                model.__class__.__name__, missing_keys))
-        if len(unexpected_keys) > 0:
-            logger.info("Weights from pretrained model not used in {}: {}".format(
-                model.__class__.__name__, unexpected_keys))
+        # if len(missing_keys) > 0:
+            # logger.info("Weights of {} not initialized from pretrained model: {}".format(
+            #     model.__class__.__name__, missing_keys))
+        # if len(unexpected_keys) > 0:
+            # logger.info("Weights from pretrained model not used in {}: {}".format(
+            #     model.__class__.__name__, unexpected_keys))
         if len(error_msgs) > 0:
             raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
                                model.__class__.__name__, "\n\t".join(error_msgs)))
